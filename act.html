@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>页面跳转至...</title>
+	<script>
+	/*百度统计 统计相关流量数据*/
+	(function() {
+	  var hm = document.createElement("script");
+	  hm.src = "https://hm.baidu.com/hm.js?_you_baidu_key_";
+	  var s = document.getElementsByTagName("script")[0];
+	  s.parentNode.insertBefore(hm, s);
+	})();
+	/*百度统计 统计相关流量数据 -end-*/
+	</script>
+</head>
+<body>
+	<script>
+		var flag = getQueryString('flag');
+		var oauth_token = getQueryString('oauth_token');
+		var appkey = getQueryString('appkey');
+  	var browser;
+ 		window.onload = function(){
+				//判断终端设备：
+		  	browser = { 
+			 	versions: function() { 
+				 	var u = navigator.userAgent, app = navigator.appVersion; 
+				 	return {//移动终端浏览器版本信息 
+					 	trident: u.indexOf('Trident') > -1, //IE内核 
+					 	presto: u.indexOf('Presto') > -1, //opera内核 
+					 	webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核 
+					 	gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核 
+					 	mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端 
+					 	ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端 
+					 	android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器 
+					 	iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器 
+					 	iPad: u.indexOf('iPad') > -1, //是否iPad 
+					 	webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部 
+				 	}; 
+			 	}(), 
+			 	language: (navigator.browserLanguage || navigator.language).toLowerCase() 
+		 	} 
+
+			if(is_weixn()){
+				//微信中打开弹出引导提示
+				var img = document.createElement('img');
+				img.src = '../wechatshare.png';
+				img.style.marginTop = '5%';
+				img.style.marginRight = '4%';
+				document.body.style.textAlign = 'right';
+				document.body.style.background = 'rgba(0,0,0,0.5)';
+				document.body.appendChild(img);
+			}else{
+				//尝试打开app。ios、安卓统一打开app的协议
+				/*与客户端约定的唤起App的方式*/
+				window.location.href = "some url to getup app"
+
+				var timeout, t = 1000, hasApp = true
+				var t1 = Date.now();
+				setTimeout(function () {//1500后执行默认操作
+					if (hasApp==false) {
+						if (browser.versions.ios || browser.versions.iPhone || browser.versions.iPad) {
+							window.location="ios App download url"; 
+						}else if (browser.versions.android) {
+							window.location="Android App download url";
+						}
+					}
+				}, 2000)
+				timeout = setTimeout(function () {
+				    var t2 = Date.now();
+				    if (!t1 || t2 - t1 < t + 100) {
+				    	//未安装去下载
+				    	hasApp = false;
+				    }
+				}, t);//t毫秒以后进入判断说明没有APP
+		 	}
+	  }
+
+  	//判断是否微信
+	  function is_weixn(){
+	    var ua = navigator.userAgent.toLowerCase();
+	    if(ua.match(/MicroMessenger/i)=="micromessenger") {
+	        return true;
+	    } else {
+	        return false;
+	    }
+		}
+		//截取url传参
+		function getQueryString(a) {
+	    var b = new RegExp("(^|&)" + a + "=([^&]*)(&|$)"),
+	    c = window.location.search.substr(1).match(b);
+	    if (null != c) {
+	        var d = decodeURIComponent(c[2]);
+	        return d.replace(/script|%22|%3E|%3C|'|"|>|<|\\/gi, "_"),
+	        d
+	    }
+	    return null
+		}
+	</script>
+</body>
+</html>
